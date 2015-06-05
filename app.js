@@ -4,11 +4,28 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var pg = require('pg');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
+
+var conString = "postgres://emilyplatzer:@localhost/herbs_with_postgresql";
+
+var client = new pg.Client(conString);
+client.connect(function(err) {
+  if(err) {
+    return console.error('could not connect to postgres', err);
+  }
+  client.query('SELECT NOW() AS "theTime"', function(err, result) {
+    if(err) {
+      return console.error('error running query', err);
+    }
+    console.log("PostgreSQL is totally hooking it up: ", result.rows[0].theTime);
+    client.end();
+  });
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
