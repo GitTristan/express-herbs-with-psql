@@ -50,3 +50,21 @@
   * In `routes/`, rename `users.js` to `herbs.js`
 1. Stop and start server, and visit `http://localhost:3000/herbs` to ensure all is well.
 1. COMMIT
+1. Add bootstrap
+  * go to [http://getbootstrap.com/getting-started/#download](http://getbootstrap.com/getting-started/#download) and click on "Download Bootstrap" (zip file)
+  * unzip, and rename file to just `bootstrap`
+  * move this directory to `/public`
+  * restart server and open [http://localhost:3000/](http://localhost:3000/)
+  * require bootstrap in `/views/layout/jade`, contents of head should be:
+
+    ```
+    title= title
+    link(rel='stylesheet', href='/bootstrap/css/bootstrap.min.css')
+    link(rel='stylesheet', href='/bootstrap/css/bootstrap-responsive.min.css')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    script(src='http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js')
+    script(src='/bootstrap/js/bootstrap.min.js')
+    ```
+
+  * refresh index... you should see the font change. Bootstrap is now loading!
+1. COMMIT
