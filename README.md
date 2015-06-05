@@ -42,3 +42,11 @@
 1. Fire up that server, and see if you have any errors...
   * `DEBUG=herbs-with-postgresql:* npm start`
 1. COMMIT `.gitignore`, them commit the rest
+1. Change `users` to `herbs`
+  * In `app.js` change `var users = require('./routes/users');` to:
+    * `var herbs = require('./routes/herbs');`
+  * and change `app.use('/users', users);` to:
+    * `app.use('/herbs', herbs);`
+  * In `routes/`, rename `users.js` to `herbs.js`
+1. Stop and start server, and visit `http://localhost:3000/herbs` to ensure all is well.
+1. COMMIT
