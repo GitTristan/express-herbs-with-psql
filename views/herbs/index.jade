@@ -1,0 +1,16 @@
+extends ../layout
+
+block content
+  h1(class="page-header") Check out my herbs!
+
+  table(class="table")
+    thead
+      th Herb name
+      th Ounces requested
+      th In Stock?
+    tbody
+      each herb in herbs
+        tr
+          td= herb.name
+          td= herb.oz
+          td= herb.instock

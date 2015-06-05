@@ -68,3 +68,76 @@
 
   * refresh index... you should see the font change. Bootstrap is now loading!
 1. COMMIT
+1. Create a "migration" in a new folder `app/migration/createHerbs.js` with the following content:
+
+  ```
+  var pg = require('pg');
+  var conString = "postgres://emilyplatzer:@localhost/herbs_with_postgresql";
+
+  var client = new pg.Client(conString);
+  client.connect();
+  var query = client.query('CREATE TABLE herbs(id SERIAL PRIMARY KEY, name VARCHAR(40) not null, oz INTEGER, inStock BOOLEAN)');
+  query.on('end', function() { client.end(); });
+  ```
+
+  * run this by executing in terminal: `$ node app/migration/createHerbs.js`
+1. Verify that this created a table
+  * `$ psql -d postgres -U username`
+  * `\c herbs_with_postgresql;`
+  * `SELECT * FROM herbs`
+  * you should see an empty table!
+1. Add one herb to our table:
+  * `INSERT INTO herbs(name, oz, instock) VALUES ('motherwort', 3, true);`
+  * `SELECT * FROM herbs`
+  * you should see your new herb added to the table
+1. View our herbs on the herb index page
+  * edit `/routes/herbs.js`
+    * add requires, necessary variables:
+
+      ```
+      var pg = require('pg');
+      var conString = "postgres://emilyplatzer:@localhost/herbs_with_postgresql"
+
+      var client = new pg.Client(conString)
+      ```
+    * add route, should end up looking like this:
+
+      ```
+      router.get('/', function(req, res, next) {
+        var herbs = [];
+        pg.connect(conString, function(err, client, done) {
+          if (err) return console.log(err);
+          var query = client.query("SELECT * FROM herbs");
+          query.on('row', function(row) {
+            herbs.push(row);
+          });
+          query.on('end', function() {
+            client.end();
+            res.render('herbs/index', {herbs: herbs});
+          });
+        });
+      });
+      ```
+
+  * Add view to `views/herbs/index.jade` with content:
+
+    ```
+    extends ../layout
+
+    block content
+      h1(class="page-header") Check out my herbs!
+
+      table(class="table")
+        thead
+          th Herb name
+          th Ounces requested
+          th In Stock?
+        tbody
+          each herb in herbs
+            tr
+              td= herb.name
+              td= herb.oz
+              td= herb.instock
+    ```
+
+1. COMMIT
