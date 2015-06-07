@@ -77,4 +77,15 @@ router.post('/:id', function(req, res, next) {
   });
 });
 
+router.get('/:id/delete', function(req, res, next) {
+  pg.connect(conString, function(err, client, done) {
+    if (err) return console.log(err);
+    var query = client.query("DELETE FROM herbs WHERE id=" + req.params.id);
+    query.on('end', function() {
+      client.end();
+      res.redirect('/herbs');
+    });
+  });
+});
+
 module.exports = router;
