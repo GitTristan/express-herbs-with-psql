@@ -141,3 +141,76 @@
     ```
 
 1. COMMIT
+1. Add new link for herbs in index
+
+  ```
+  div(class="page-header")
+    a(href="/herbs/new" class="btn btn-success pull-right") Add Herb
+    h1 Check out my herbs!
+  ```
+
+1. Add route for new herb
+
+  ```
+  router.get('/new', function(req, res, next) {
+    res.render('herbs/new');
+  });
+  ```
+
+1. Add view for new herb
+
+  ```
+  extends ../layout
+
+  block content
+    h1(class="page-header") New Herb
+
+    ol(class="breadcrumb")
+      li
+        a(href="/herbs") My Herbs
+      li(class="active") New
+
+    form(action='/herbs' method='post' class='form-horizontal')
+
+      div(class='form-group')
+        label(class="col-sm-2 control-label") Name
+        div(class='col-sm-4')
+          input(type="text" name="herb[name]" class='form-control')
+
+      div(class="form-group")
+        label(class="col-sm-2 control-label") Ounces needed
+        div(class="col-sm-4")
+          input(type='number' name='herb[oz]' class="form-control")
+
+      div(class="form-group")
+        div(class="col-sm-offset-2 col-sm-4")
+          div(class="checkbox")
+          label Do you have this herb in stock?
+            input(type='checkbox' name='herb[instock]' class="form-control")
+
+      div(class="form-group")
+        div(class="col-sm-offset-2 col-sm-4")
+          input(type='submit' name='commit' value='Add this herb' class="btn btn-success")
+  ```
+
+1. Add create route
+
+  ```
+  router.post('/', function(req, res, next) {
+    var herbs = [];
+    pg.connect(conString, function(err, client, done) {
+      if (err) return console.log(err);
+      client.query("INSERT INTO herbs(name, oz, instock) values($1, $2, $3)", [req.body['herb[name]'], req.body['herb[oz]'], req.body['herb[inStock]']]);
+      var query = client.query("SELECT * FROM herbs");
+      query.on('row', function(row) {
+        herbs.push(row);
+      });
+      query.on('end', function() {
+        client.end();
+        res.render('herbs/index', {herbs: herbs});
+      });
+    });
+  });
+  ```
+
+1. COMMIT
