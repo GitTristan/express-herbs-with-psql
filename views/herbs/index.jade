@@ -1,7 +1,9 @@
 extends ../layout
 
 block content
-  h1(class="page-header") Check out my herbs!
+  div(class="page-header")
+    a(href="/herbs/new" class="btn btn-success pull-right") Add Herb
+    h1 Check out my herbs!
 
   table(class="table")
     thead

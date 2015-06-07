@@ -21,4 +21,19 @@ router.get('/', function(req, res, next) {
   });
 });
 
+router.get('/new', function(req, res, next) {
+  res.render('herbs/new');
+});
+
+router.post('/', function(req, res, next) {
+  pg.connect(conString, function(err, client, done) {
+    if (err) return console.log(err);
+    var query = client.query("INSERT INTO herbs(name, oz, instock) values($1, $2, $3)", [req.body['herb[name]'], req.body['herb[oz]'], req.body['herb[inStock]']]);
+    query.on('end', function() {
+      client.end();
+      res.redirect('/herbs');
+    });
+  });
+});
+
 module.exports = router;
