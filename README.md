@@ -261,3 +261,87 @@
   ```
 
 1. COMMIT
+1. Add link for herb edit on `views/herbs/index.jade`
+
+  ```
+  td
+    a(href="/herbs/#{herb.id}/edit" class="btn btn-warning") Edit
+  ```
+
+1. Add route for herb edit
+
+  ```
+  router.get('/:id/edit', function(req, res, next) {
+    pg.connect(conString, function(err, client, done) {
+      var herb;
+      if (err) return console.log(err);
+      var query = client.query("SELECT * FROM herbs WHERE (id = " + req.params.id + ") LIMIT 1");
+      query.on('row', function(row) {
+        herb = row;
+      });
+      query.on('end', function() {
+        client.end();
+        res.render('herbs/edit', {herb: herb});
+      });
+    });
+  })
+  ```
+
+1. Add view for herb edit
+
+  ```
+  extends ../layout
+
+  block content
+    h1(class="page-header") Edit #{herb.name}
+
+    ol(class="breadcrumb")
+      li
+        a(href="/herbs") My Herbs
+      li(class="active") Edit
+
+    form(action='/herbs/#{herb.id}' method='post' class='form-horizontal')
+
+      div(class='form-group')
+        label(class="col-sm-2 control-label") Name
+        div(class='col-sm-4')
+          input(type="text" name="herb[name]" value=herb.name class='form-control')
+
+      div(class="form-group")
+        label(class="col-sm-2 control-label") Ounces needed
+        div(class="col-sm-4")
+          input(type='number' name='herb[oz]' value=herb.oz class="form-control")
+
+      div(class="form-group")
+        div(class="col-sm-offset-2 col-sm-4")
+          div(class="checkbox")
+          label Do you have this herb in stock?
+            if herb.instock
+              input(type='checkbox' name='herb[inStock]' checked=herb.instock class="form-control")
+            else
+              input(type='checkbox' name='herb[inStock]' class="form-control")
+
+      div(class="form-group")
+        div(class="col-sm-offset-2 col-sm-4")
+          input(type='submit' name='commit' value='Update this herb' class="btn btn-success")
+  ```
+
+1. Add route for herb Update
+
+  ```
+  router.post('/:id', function(req, res, next) {
+    pg.connect(conString, function(err, client, done) {
+      var herbs = [];
+      if (err) return console.log(err);
+      client.query("UPDATE herbs SET name=($1), oz=($2), instock=($3) WHERE id=($4)", [req.body['herb[name]'], req.body['herb[oz]'], req.body['herb[inStock]'], req.params.id]);
+      var query = client.query("SELECT * FROM herbs");
+      query.on('row', function(row) {
+        herbs.push(row);
+      });
+      query.on('end', function() {
+        client.end();
+        res.render('herbs/index', {herbs: herbs});
+      });
+    });
+  });
+  ```

@@ -56,4 +56,35 @@ router.get('/:id', function(req, res, next) {
   });
 });
 
+router.get('/:id/edit', function(req, res, next) {
+  pg.connect(conString, function(err, client, done) {
+    var herb;
+    if (err) return console.log(err);
+    var query = client.query("SELECT * FROM herbs WHERE (id = " + req.params.id + ") LIMIT 1");
+    query.on('row', function(row) {
+      herb = row;
+    });
+    query.on('end', function() {
+      client.end();
+      res.render('herbs/edit', {herb: herb});
+    });
+  });
+})
+
+router.post('/:id', function(req, res, next) {
+  pg.connect(conString, function(err, client, done) {
+    var herbs = [];
+    if (err) return console.log(err);
+    client.query("UPDATE herbs SET name=($1), oz=($2), instock=($3) WHERE id=($4)", [req.body['herb[name]'], req.body['herb[oz]'], req.body['herb[inStock]'], req.params.id]);
+    var query = client.query("SELECT * FROM herbs");
+    query.on('row', function(row) {
+      herbs.push(row);
+    });
+    query.on('end', function() {
+      client.end();
+      res.render('herbs/index', {herbs: herbs});
+    });
+  });
+});
+
 module.exports = router;

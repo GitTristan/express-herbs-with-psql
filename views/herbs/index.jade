@@ -10,6 +10,7 @@ block content
       th Herb name
       th Ounces requested
       th In Stock?
+      th
     tbody
       each herb in herbs
         tr
@@ -17,3 +18,5 @@ block content
             a(href="/herbs/#{herb.id}")= herb.name
           td= herb.oz
           td= herb.instock
+          td
+            a(href="/herbs/#{herb.id}/edit" class="btn btn-warning") Edit
