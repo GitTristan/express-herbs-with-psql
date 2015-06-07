@@ -36,4 +36,19 @@ router.post('/', function(req, res, next) {
   });
 });
 
+router.get('/:id', function(req, res, next) {
+  pg.connect(conString, function(err, client, done) {
+    var herb;
+    if (err) return console.log(err);
+    var query = client.query("SELECT * FROM herbs WHERE (id = " + req.params.id + ") LIMIT 1");
+    query.on('row', function(row) {
+      herb = row;
+    });
+    query.on('end', function() {
+      client.end();
+      res.render('herbs/show', {herb: herb});
+    });
+  });
+});
+
 module.exports = router;
