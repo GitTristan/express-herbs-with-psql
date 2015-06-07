@@ -345,3 +345,32 @@
     });
   });
   ```
+
+1. COMMIT
+1. Add delete link to index
+
+  ```
+  a(href="/herbs/#{herb.id}/delete" class="btn btn-warning") Delete
+  ```
+
+1. Add herb delete route
+
+  ```
+  router.get('/:id/delete', function(req, res, next) {
+    pg.connect(conString, function(err, client, done) {
+      var herbs = [];
+      if (err) return console.log(err);
+      client.query("DELETE FROM herbs WHERE id=($1)", req.params.id);
+      var query = client.query("SELECT * FROM herbs");
+      query.on('row', function(row) {
+        herbs.push(row);
+      });
+      query.on('end', function() {
+        client.end();
+        res.render('herbs/index', {herbs: herbs});
+      });
+    });
+  })
+  ```
+
+1. COMMIT
