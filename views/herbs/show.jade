@@ -1,0 +1,15 @@
+extends ../layout
+
+block content
+  h1(class="page-header")= herb.name
+
+  ol(class="breadcrumb")
+    li
+      a(href="/herbs") My Herbs
+    li(class="active")= herb.name
+
+  h3 #{herb.oz} Ounces
+  if herb.instock
+    h3 Available
+  else
+    h3 Unavailable

@@ -214,3 +214,50 @@
   ```
 
 1. COMMIT
+1. Add link to herb show page
+
+  ```
+  td
+    a(href="/herbs/#{herb.id}")= herb.name
+  ```
+
+1. Add route for herb show
+
+  ```
+  router.get('/:id', function(req, res, next) {
+    pg.connect(conString, function(err, client, done) {
+      var herb;
+      if (err) return console.log(err);
+      var query = client.query("SELECT * FROM herbs WHERE (id = " + req.params.id + ") LIMIT 1");
+      query.on('row', function(row) {
+        herb = row;
+      });
+      query.on('end', function() {
+        client.end();
+        res.render('herbs/show', {herb: herb});
+      });
+    });
+  });
+  ```
+
+1. Add view for herb show
+
+  ```
+  extends ../layout
+
+  block content
+    h1(class="page-header")= herb.name
+
+    ol(class="breadcrumb")
+      li
+        a(href="/herbs") My Herbs
+      li(class="active")= herb.name
+
+    h3 #{herb.oz} Ounces
+    if herb.instock
+      h3 Available
+    else
+      h3 Unavailable
+  ```
+
+1. COMMIT
