@@ -359,3 +359,11 @@
   ```
 
 1. COMMIT
+
+#### References used:
+
+1. [My previous Mongo Express Crud app "Books"](https://github.com/craftninja/express-example-books/blob/master/routes/books.js)
+1. [Basic Database with PostgreSQL blog post](http://www.emilyplatzer.io/2014/04/07/postgresql.html)
+1. [Express database integration guide](http://expressjs.com/guide/database-integration.html#postgres)
+1. [Example code](https://github.com/brianc/node-postgres/wiki/Example)
+1. [Express PostgreSQL JSON api walkthrough](http://mherman.org/blog/2015/02/12/postgresql-and-nodejs/#.VXUb61zBzGe)
