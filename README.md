@@ -35,7 +35,7 @@
         return console.error('error running query', err);
       }
       console.log("PostgreSQL is totally hooking it up: ", result.rows[0].theTime);
-      client.end();
+      done();
     });
   });
   ```
@@ -112,7 +112,7 @@
             herbs.push(row);
           });
           query.on('end', function() {
-            client.end();
+            done();
             res.render('herbs/index', {herbs: herbs});
           });
         });
@@ -201,7 +201,7 @@
       if (err) return console.log(err);
       var query = client.query("INSERT INTO herbs(name, oz, instock) values($1, $2, $3)", [req.body['herb[name]'], req.body['herb[oz]'], req.body['herb[inStock]']]);
       query.on('end', function() {
-        client.end();
+        done();
         res.redirect('/herbs');
       });
     });
@@ -228,7 +228,7 @@
         herb = row;
       });
       query.on('end', function() {
-        client.end();
+        done();
         res.render('herbs/show', {herb: herb});
       });
     });
@@ -275,7 +275,7 @@
         herb = row;
       });
       query.on('end', function() {
-        client.end();
+        done();
         res.render('herbs/edit', {herb: herb});
       });
     });
@@ -329,7 +329,7 @@
       if (err) return console.log(err);
       var query = client.query("UPDATE herbs SET name=($1), oz=($2), instock=($3) WHERE id=($4)", [req.body['herb[name]'], req.body['herb[oz]'], req.body['herb[inStock]'], req.params.id]);
       query.on('end', function() {
-        client.end();
+        done();
         res.redirect('/herbs');
       });
     });
@@ -351,7 +351,7 @@
       if (err) return console.log(err);
       var query = client.query("DELETE FROM herbs WHERE id=" + req.params.id);
       query.on('end', function() {
-        client.end();
+        done();
         res.redirect('/herbs');
       });
     });
